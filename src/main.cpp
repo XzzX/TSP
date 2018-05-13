@@ -1,26 +1,32 @@
-#include "Greedy.h"
 #include "TSP.h"
 
-#include "Display.h"
-#include "Input.h"
+#include "algorithm/Greedy.h"
+#include "algorithm/InOrder.h"
+
+#include "util/random.h"
+
+#include "visualization/Display.h"
+#include "visualization/Input.h"
 
 #include <chrono>
 #include <functional>
+#include <iostream>
 #include <random>
 #include <thread>
 
+std::shared_ptr<Cities> createCities(const int n)
+{
+   std::shared_ptr<Cities> cities = std::make_shared<Cities>();
+   for (auto i = 0; i<n; ++i)
+   {
+      cities->emplace_back(intRandom(0,100), intRandom(0,100));
+   }
+   return cities;
+}
+
 int main()
 {
-   static std::default_random_engine generator( std::chrono::system_clock::now().time_since_epoch().count() );
-   std::uniform_real_distribution<double> distribution(0.0,100);
-   auto rnd = std::bind(distribution, generator);
-
-   std::shared_ptr<Cities> cities = std::make_shared<Cities>();
-   for (auto i = 0; i<7; ++i)
-   {
-      cities->emplace_back(rnd(), rnd());
-   }
-
+   std::shared_ptr<Cities> cities = createCities(7);
    GreedyRoute route(cities);
 
    Display display(std::make_shared<sf::RenderWindow>(sf::VideoMode(800, 800), "My window"));
@@ -31,8 +37,19 @@ int main()
    {
       auto start = std::chrono::high_resolution_clock::now();
 
+      Event ev;
+      while (input.pollEvents(ev))
+      {
+         switch (ev)
+         {
+         case Event::Restart:
+            cities = createCities(7);
+            route = GreedyRoute(cities);
+            break;
+         }
+      }
+
       route.optimize();
-      input.pollEvents();
       display.display(*cities, route.getOptimalRoute());
 
       auto end = std::chrono::high_resolution_clock::now();

@@ -1,12 +1,12 @@
-#include "Greedy.h"
+#include "InOrder.h"
 
 #include "TSP.h"
 
-GreedyRoute::GreedyRoute(const std::shared_ptr<Cities>& cities)
+InOrder::InOrder(const std::shared_ptr<Cities>& cities)
    : cities_(cities)
 {}
 
-void GreedyRoute::optimize()
+void InOrder::optimize()
 {
    if (route_.size() < cities_->size())
    {
