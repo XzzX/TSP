@@ -2,7 +2,7 @@
 
 #include "TSP.h"
 
-#include "util/Debug.h"
+#include "util/debug.h"
 #include "util/random.h"
 
 #include <cassert>
