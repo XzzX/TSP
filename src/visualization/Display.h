@@ -20,6 +20,8 @@ public:
     inline bool isOpen() const
     { return window_->isOpen(); }
 
+    void setWindowTitle(const std::string& title) {window_->setTitle(title);}
+
 private:
     std::shared_ptr<sf::RenderWindow> window_;
     sf::View view_{sf::FloatRect(0, 0, 100, 100)};

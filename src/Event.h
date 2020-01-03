@@ -4,5 +4,7 @@ enum class Event
 {
     Restart,
     Reset,
-    Iterate
+    Iterate,
+    Greedy,
+    SimulatedAnnealing
 };

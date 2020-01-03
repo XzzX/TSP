@@ -48,4 +48,6 @@ public:
 
     ///Is the algorithm finished? No further or only small improvements.
     virtual bool isFinished() const = 0;
+
+    virtual void setCurrentRoute(const Route& route) = 0;
 };

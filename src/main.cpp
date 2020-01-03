@@ -43,11 +43,11 @@ std::shared_ptr<std::vector<double>> createDistanceMatrix(const std::shared_ptr<
 int main()
 {
     const int numberOfCities = 100;
-    const int interval = 1;
+    int interval = 1;
 
     auto cities = createCities(numberOfCities);
     auto distanceMatrix = createDistanceMatrix(cities);
-    auto route = SimulatedAnnealing(numberOfCities, distanceMatrix);
+    std::shared_ptr<ITSP> route = std::make_shared<GreedyRoute>(numberOfCities, distanceMatrix);
 
     Display display(std::make_shared<sf::RenderWindow>(sf::VideoMode(800, 800), "My window"));
     Input input(display.getWindow());
@@ -60,18 +60,30 @@ int main()
         Event ev;
         while (input.pollEvents(ev))
         {
+            auto tmp = route;
             switch (ev)
             {
+                case Event::Greedy:
+                    route = std::make_shared<GreedyRoute>(numberOfCities, createDistanceMatrix(cities));
+                    interval = GreedyRoute::defaultInterval;
+                    display.setWindowTitle("Greedy");
+                    break;
+                case Event::SimulatedAnnealing:
+                    route = std::make_shared<SimulatedAnnealing>(numberOfCities, createDistanceMatrix(cities));
+                    route->setCurrentRoute(tmp->getCurrentRoute());
+                    interval = SimulatedAnnealing::defaultInterval;
+                    display.setWindowTitle("Simulated Annealing");
+                    break;
                 case Event::Restart:
                     cities = createCities(numberOfCities);
                     distanceMatrix = createDistanceMatrix(cities);
                     //route = GreedyRoute(numberOfCities, createDistanceMatrix(cities));
                     break;
                 case Event::Reset:
-                    route.reset();
+                    route->reset();
                     break;
                 case Event::Iterate:
-                    route.iterate();
+                    route->iterate();
                     break;
             }
         }
@@ -79,7 +91,7 @@ int main()
         auto now = std::chrono::high_resolution_clock::now();
         if ((now - lastIteration) > std::chrono::duration<double, std::milli>(interval))
         {
-            route.iterate();
+            route->iterate();
             lastIteration = now;
 
             //for (auto idx : route.getCurrentRoute())
@@ -91,7 +103,8 @@ int main()
             //std::cout << length(route.getCurrentRoute(), numberOfCities, *distanceMatrix) << std::endl;
         }
 
-        display.display(*cities, route.getCurrentRoute(), length(route.getCurrentRoute(), numberOfCities, *distanceMatrix));
+        display.display(*cities, route->getCurrentRoute(),
+                        length(route->getCurrentRoute(), numberOfCities, *distanceMatrix));
 
     }
 

@@ -21,6 +21,10 @@ bool Input::pollEvents(Event &event)
             window_->close();
         if (ev.type == sf::Event::KeyReleased)
         {
+            if (ev.key.code == sf::Keyboard::Num1)
+                events_.push(Event::Greedy);
+            if (ev.key.code == sf::Keyboard::Num2)
+                events_.push(Event::SimulatedAnnealing);
             if (ev.key.code == sf::Keyboard::BackSpace)
                 events_.push(Event::Restart);
             if (ev.key.code == sf::Keyboard::Return)
