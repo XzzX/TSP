@@ -2,5 +2,7 @@
 
 enum class Event
 {
-    Restart
+    Restart,
+    Reset,
+    Iterate
 };

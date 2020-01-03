@@ -17,49 +17,71 @@
 
 std::shared_ptr<Cities> createCities(const int n)
 {
-   auto cities = std::make_shared<Cities>();
-   std::generate_n( std::back_inserter(
-           *cities),
-           n,
-           [](){return City(intRandom(0,100), intRandom(0,100));});
-   return cities;
+    auto cities = std::make_shared<Cities>();
+    std::generate_n(std::back_inserter(
+            *cities),
+                    n,
+                    []() { return City(intRandom(0, 100), intRandom(0, 100)); });
+    return cities;
+}
+
+std::shared_ptr<std::vector<double>> createDistanceMatrix(const std::shared_ptr<Cities> &cities)
+{
+    auto numberOfCities = cities->size();
+    auto distanceMatrix = std::make_shared<std::vector<double>>(numberOfCities * numberOfCities);
+    for (size_t i = 0; i < numberOfCities; ++i)
+    {
+        for (size_t j = 0; j < numberOfCities; ++j)
+        {
+            (*distanceMatrix)[i + j * numberOfCities] = distance((*cities)[i], (*cities)[j]);
+        }
+    }
+    return distanceMatrix;
 }
 
 int main()
 {
-   const int numberOfCities = 10;
-   const int interval = 2000;
+    const int numberOfCities = 10;
+    const int interval = 1000;
 
-   auto cities = createCities(numberOfCities);
-   GreedyRoute route(cities);
+    auto cities = createCities(numberOfCities);
+    auto route = GreedyRoute(numberOfCities, createDistanceMatrix(cities));
 
-   Display display(std::make_shared<sf::RenderWindow>(sf::VideoMode(800, 800), "My window"));
-   Input input(display.getWindow());
+    Display display(std::make_shared<sf::RenderWindow>(sf::VideoMode(800, 800), "My window"));
+    Input input(display.getWindow());
 
-   // run the program as long as the window is open
-   while (display.isOpen())
-   {
-      auto start = std::chrono::high_resolution_clock::now();
+    auto lastIteration = std::chrono::high_resolution_clock::now();
 
-      Event ev;
-      while (input.pollEvents(ev))
-      {
-         switch (ev)
-         {
-         case Event::Restart:
-            cities = createCities(numberOfCities);
-            route = GreedyRoute(cities);
-            break;
-         }
-      }
+    // run the program as long as the window is open
+    while (display.isOpen())
+    {
+        Event ev;
+        while (input.pollEvents(ev))
+        {
+            switch (ev)
+            {
+                case Event::Restart:
+                    cities = createCities(numberOfCities);
+                    route = GreedyRoute(numberOfCities, createDistanceMatrix(cities));
+                    break;
+                case Event::Reset:
+                    route.reset();
+                    break;
+                case Event::Iterate:
+                    route.iterate();
+                    break;
+            }
+        }
 
-      route.optimize();
-      display.display(*cities, route.getOptimalRoute());
+        auto now = std::chrono::high_resolution_clock::now();
+        if ((now - lastIteration) > std::chrono::duration<double, std::milli>(interval))
+        {
+            route.iterate();
+            lastIteration = now;
+        }
 
-      auto end = std::chrono::high_resolution_clock::now();
-      std::chrono::duration<double, std::milli> elapsed = end-start;
-      std::this_thread::sleep_for(std::chrono::duration<double, std::milli>(interval) - elapsed);
-   }
+        display.display(*cities, route.getCurrentRoute());
+    }
 
-   return 0;
+    return 0;
 }

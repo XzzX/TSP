@@ -45,7 +45,8 @@ void Display::display(const Cities& cities, const Route& route)
    }
    if (!route.empty())
    {
-       line.emplace_back( sf::Vector2f(cities[0].first, cities[0].second) );
+       auto item = route.front();
+       line.emplace_back( sf::Vector2f(cities[item].first, cities[item].second) );
    }
 
    window_->draw(&line[0], line.size(), sf::LinesStrip);
