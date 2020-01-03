@@ -17,6 +17,7 @@ static const std::string ASSERT_TAG = "[ASSERT ] ";
 static const int TAG_WIDTH = 10;
 
 //http://stackoverflow.com/a/29752943
+inline
 void replaceAll( std::string& source, const std::string& from, const std::string& to )
 {
     std::string newString;
