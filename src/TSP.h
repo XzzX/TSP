@@ -14,6 +14,26 @@ double distance(const City& a, const City& b)
    return sqrt((a.first - b.first) * (a.first - b.first) + (a.second - b.second) * (a.second - b.second));
 }
 
+inline
+double length(const Route& route, const size_t numberOfCities, const std::vector<double>& distanceMatrix)
+{
+    auto first = route.begin();
+    if (first == route.end())
+        return 0;
+    auto second = ++route.begin();
+
+    double tmp = 0;
+    while (second != route.end())
+    {
+        tmp += distanceMatrix[(*first) + numberOfCities * (*second)];
+        ++first;
+        ++second;
+    }
+    tmp += distanceMatrix[route.front() + numberOfCities * route.back()];
+
+    return tmp;
+}
+
 class ITSP
 {
 public:
