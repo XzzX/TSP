@@ -91,7 +91,7 @@ int main()
             //std::cout << length(route.getCurrentRoute(), numberOfCities, *distanceMatrix) << std::endl;
         }
 
-        display.display(*cities, route.getCurrentRoute());
+        display.display(*cities, route.getCurrentRoute(), length(route.getCurrentRoute(), numberOfCities, *distanceMatrix));
 
     }
 

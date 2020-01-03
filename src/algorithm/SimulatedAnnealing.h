@@ -21,4 +21,6 @@ private:
     size_t numberOfCities_;
     std::shared_ptr<const std::vector<double>> distanceMatrix_;
     Route route_;
+    double currentLength_;
+    double temperature_ = 1;
 };
