@@ -3,7 +3,7 @@
 #include "algorithm/Greedy.h"
 #include "algorithm/InOrder.h"
 
-#include "util/random.h"
+#include "common/random.h"
 
 #include "visualization/Display.h"
 #include "visualization/Input.h"
@@ -11,22 +11,26 @@
 #include <chrono>
 #include <functional>
 #include <iostream>
+#include <iterator>
 #include <random>
 #include <thread>
 
 std::shared_ptr<Cities> createCities(const int n)
 {
-   std::shared_ptr<Cities> cities = std::make_shared<Cities>();
-   for (auto i = 0; i<n; ++i)
-   {
-      cities->emplace_back(intRandom(0,100), intRandom(0,100));
-   }
+   auto cities = std::make_shared<Cities>();
+   std::generate_n( std::back_inserter(
+           *cities),
+           n,
+           [](){return City(intRandom(0,100), intRandom(0,100));});
    return cities;
 }
 
 int main()
 {
-   std::shared_ptr<Cities> cities = createCities(7);
+   const int numberOfCities = 10;
+   const int interval = 2000;
+
+   auto cities = createCities(numberOfCities);
    GreedyRoute route(cities);
 
    Display display(std::make_shared<sf::RenderWindow>(sf::VideoMode(800, 800), "My window"));
@@ -43,7 +47,7 @@ int main()
          switch (ev)
          {
          case Event::Restart:
-            cities = createCities(7);
+            cities = createCities(numberOfCities);
             route = GreedyRoute(cities);
             break;
          }
@@ -54,7 +58,7 @@ int main()
 
       auto end = std::chrono::high_resolution_clock::now();
       std::chrono::duration<double, std::milli> elapsed = end-start;
-      std::this_thread::sleep_for(std::chrono::duration<double, std::milli>(1000) - elapsed);
+      std::this_thread::sleep_for(std::chrono::duration<double, std::milli>(interval) - elapsed);
    }
 
    return 0;

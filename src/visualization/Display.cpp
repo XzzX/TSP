@@ -43,6 +43,10 @@ void Display::display(const Cities& cities, const Route& route)
       assert(item < cities.size());
       line.emplace_back( sf::Vector2f(cities[item].first, cities[item].second) );
    }
+   if (!route.empty())
+   {
+       line.emplace_back( sf::Vector2f(cities[0].first, cities[0].second) );
+   }
 
    window_->draw(&line[0], line.size(), sf::LinesStrip);
 

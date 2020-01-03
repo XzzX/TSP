@@ -2,8 +2,8 @@
 
 #include "TSP.h"
 
-#include "util/debug.h"
-#include "util/random.h"
+#include "common/debug.h"
+#include "common/random.h"
 
 #include <cassert>
 #include <limits>
