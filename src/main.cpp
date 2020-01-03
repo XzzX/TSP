@@ -2,6 +2,7 @@
 
 #include "algorithm/Greedy.h"
 #include "algorithm/InOrder.h"
+#include "algorithm/SimulatedAnnealing.h"
 
 #include "common/random.h"
 
@@ -41,11 +42,12 @@ std::shared_ptr<std::vector<double>> createDistanceMatrix(const std::shared_ptr<
 
 int main()
 {
-    const int numberOfCities = 10;
-    const int interval = 1000;
+    const int numberOfCities = 100;
+    const int interval = 1;
 
     auto cities = createCities(numberOfCities);
-    auto route = GreedyRoute(numberOfCities, createDistanceMatrix(cities));
+    auto distanceMatrix = createDistanceMatrix(cities);
+    auto route = SimulatedAnnealing(numberOfCities, distanceMatrix);
 
     Display display(std::make_shared<sf::RenderWindow>(sf::VideoMode(800, 800), "My window"));
     Input input(display.getWindow());
@@ -62,7 +64,8 @@ int main()
             {
                 case Event::Restart:
                     cities = createCities(numberOfCities);
-                    route = GreedyRoute(numberOfCities, createDistanceMatrix(cities));
+                    distanceMatrix = createDistanceMatrix(cities);
+                    //route = GreedyRoute(numberOfCities, createDistanceMatrix(cities));
                     break;
                 case Event::Reset:
                     route.reset();
@@ -78,9 +81,18 @@ int main()
         {
             route.iterate();
             lastIteration = now;
+
+            //for (auto idx : route.getCurrentRoute())
+            //{
+            //    std::cout << idx << " ";
+            //}
+            //std::cout << std::endl;
+
+            //std::cout << length(route.getCurrentRoute(), numberOfCities, *distanceMatrix) << std::endl;
         }
 
         display.display(*cities, route.getCurrentRoute());
+
     }
 
     return 0;

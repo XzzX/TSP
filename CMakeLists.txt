@@ -8,6 +8,7 @@ project(TravellingSalesmanProblem)
 add_executable(${PROJECT_NAME}
     "src/main.cpp"
     "src/algorithm/Greedy.cpp"
+    "src/algorithm/SimulatedAnnealing.cpp"
     "src/algorithm/InOrder.cpp"
     "src/common/random.cpp"
     "src/visualization/Display.cpp"
