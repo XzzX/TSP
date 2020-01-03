@@ -40,7 +40,7 @@ namespace debug {
 #define ASSERT_LESSEQUAL_2(X,Y)         { do { if( !((X) <= (Y)) ) { LOG_FATAL( common::debug::generateAssertionMessage( (X), (Y), #X, #Y, " <= " ) ); exit(-1); } } while (0); }
 #define ASSERT_LESSEQUAL_3(X,Y,MSG)     { do { if( !((X) <= (Y)) ) { LOG_FATAL( common::debug::generateAssertionMessage( (X), (Y), #X, #Y, " <= " ) << "\n\n" << (MSG) ); exit(-1); } } while (0); }
 
-#elif
+#else
 
 #define ASSERT_1(X)         {}
 #define ASSERT_2(X,MSG)     {}
