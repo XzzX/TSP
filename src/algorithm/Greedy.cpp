@@ -27,7 +27,7 @@ void GreedyRoute::iterate()
    {
       if (route_.empty())
       {
-         route_.emplace_back(intRandom(0, numberOfCities_));
+         route_.emplace_back(intRandom(0, numberOfCities_ - 1));
          visited_[route_[0]] = true;
          return;
       }
